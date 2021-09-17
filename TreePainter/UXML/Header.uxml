@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+>
+
+    <engine:Box class="headerContainer" name="headerContainer">
+        <engine:Label class="header" text="TreePainter" />
+        
+        <engine:Box name="terrainDataContainer" class="terrainDataContainer" style="margin-bottom: 8px;" >
+            <engine:Label name="terrainObjectLabel" class="terrainObjectLabel" text="No Active Terrain." />
+            <editor:ObjectField name="terrainObject" class="terrainObject" style="font-size: 18; height: 22px; margin-left: 14px; width: 160px;"/>
+        </engine:Box>
+        
+        <engine:Box name="collectionInfo" class="collectionInfo">
+            <engine:Box name="activeCollectionContainer" class="activeCollectionContainer">
+                <engine:Label name="activeCollection" class="activeCollection" text="No active Collection." />
+                <engine:Label name="activeCollectionContent" class="activeCollectionContent" text="" />
+            </engine:Box>
+
+
+        </engine:Box>
+            <engine:Box name="collectionsButtonsContainer" class="collectionsButtonsContainer" >
+                <engine:Button name="saveButton" class="saveButton" text="Save" />
+            </engine:Box>
+    </engine:Box>
+</engine:UXML>

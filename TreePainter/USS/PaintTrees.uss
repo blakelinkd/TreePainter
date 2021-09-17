@@ -1,0 +1,180 @@
+xxxLabel {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(168, 138, 255);
+}
+
+Button {
+    font-size: 24px;
+    -unity-font-style: bold;
+    color: rgb(200,100, 60);
+}
+
+.header {
+    font-size: 26px;
+    padding: 10px;
+    -unity-font-style: bold;
+    color: rgb(200, 400, 60);
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.currentCollection {
+    font-size: 26px;
+    padding: 10px;
+    -unity-font-style: bold;
+    color:rgb(200,100, 60);
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.footer {
+    font-size: 26px;
+    padding: 10px;
+    color: rgb(200, 400, 60);
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.helpText {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(168, 138, 255);
+}
+
+.mainContainer {
+    margin-top: 24px;
+    margin-left: 16px;
+    padding: 12px;
+    
+}
+.createCollection {
+    padding: 10px;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.inputField {
+    margin-top: 22px;
+    font-size: 18px;
+    padding: 4px;
+    -unity-font-style: bold;
+    align-content: center;
+    height: 40px;
+    border-width: 1px;
+    border-color: rgb(126, 165, 255);
+    border-radius: 5px;
+    margin-bottom: 12px;
+}
+
+.listView {
+    font-size: 24px;
+    color: rgb(200,100, 60);
+    --unity-item-height: 24px;
+    height: 300px;
+}
+
+.RightListView {
+    font-size: 24px;
+    color: rgb(200,100, 60);
+    --unity-item-height: 24px;
+    height: 300px;
+}
+
+
+listView, Label {
+    padding-left: 10px;
+    color: rgb(200, 100, 60);
+}
+
+
+Label:hover {
+    color: rgb(300, 20, 156);
+}
+
+
+
+
+.activeCollectionContainer {
+    display: flex;
+    flex-direction: row;
+    align-content: flex-start;
+}
+
+
+.activeCollection {
+    color: rgb(300, 20, 156);
+    padding-left: 10px;
+    margin-left: 25px;
+    font-size: 22px;
+}
+
+.activeCollectionContent {
+     color: rgb(253, 236, 61);
+     -unity-font-style: bold;
+    font-size: 22px;
+}
+
+.collectionsButtonsContainer {
+    flex-direction: row;
+    align-content: flex-end;
+    margin-right: 10%;
+}
+
+.headerContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.terrainDataContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.terrainObjectLabel {
+    color: rgb(300, 20, 156);
+    padding-left: 10px;
+    margin-left: 25px;
+    font-size: 22px;
+}
+
+.collectionInfo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.headerContainer, Button {
+    padding-left: 14px;
+    padding-right: 14px;
+    margin-left: 22px;
+}
+
+.activeCollectionLabel {
+     color: rgb(253, 236, 61);
+    -unity-font-style: bold;
+    font-size: 22px;
+
+}
+
+.LeftCollectionsContainer {
+    width: 50%;
+}
+
+.RightCollectionsContainer {
+    width: 50%;
+}
+
+.CollectionsMainContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.RightCollectionsContainerLabel {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(168, 138, 255);
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
