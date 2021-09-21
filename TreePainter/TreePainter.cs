@@ -5,16 +5,17 @@ using UnityEditor.UIElements;
 using System;
 using System.IO;
 using System.Collections.Generic;
-using SimpleValidator;
-using SimpleValidator.Exceptions;
-using TinyJson;
+//using SimpleValidator;
+//using SimpleValidator.Exceptions;
+//using TinyJson;
+using TinyJSON;
 using System.Linq;
 
 public class TreePainter : EditorWindow
 {
 
 
-    public static string configFilePath = "Assets/Editor/PaintTrees/config.json";
+    public static string configFilePath = "Assets/Editor/TreePainter/config.json";
 
 
     [SerializeField] Config configuration;
@@ -24,16 +25,17 @@ public class TreePainter : EditorWindow
     GameObject activeTerrain;
     private VisualElement dragAndDropArea;
     public static bool config;
+    public List<GameObject> activePrefabCollection = new List<GameObject>();
     //[MenuItem("Paint Trees/Setup")]
 
     class RightClick : MonoBehaviour
     {
-        [MenuItem("GameObject/TerrainPainter", false, 0)]
-        public static void TerrainPainter()
+        [MenuItem("GameObject/TreePainter", false, 0)]
+        public static void TreePainter()
         {
             config = configExists(configFilePath);
             TreePainter wnd = GetWindow<TreePainter>();
-            wnd.titleContent = new GUIContent("PaintTrees");
+            wnd.titleContent = new GUIContent("TreePainter");
             Vector2 windowSize = new Vector2(400, 600);
             wnd.minSize = windowSize;
         }
@@ -69,9 +71,11 @@ public class TreePainter : EditorWindow
             activeTerrain = (GameObject)objectField.value;
 
             List<GameObject> prefabList = new List<GameObject>();
-            foreach (var obj in activeCollection.object_collection)
+            //foreach (var obj in activeCollection.object_collection)
+            foreach (var obj in activePrefabCollection)
             {
                 Debug.Log($"{obj.name} is type: { obj.GetType() } ");
+
                 prefabList.Add(obj);
             }
 
@@ -81,6 +85,7 @@ public class TreePainter : EditorWindow
             TerrainWriter terrainWriter = new TerrainWriter(activeTerrain);
 
             terrainWriter.writeTerrain(prefabList, activeTerrain);
+            PrefabList();
 
 
         }
@@ -175,6 +180,7 @@ public class TreePainter : EditorWindow
         throw new NotImplementedException();
     }
 
+
     private void OnDragEnterEvent(DragEnterEvent evt)
     {
         DragAndDrop.AcceptDrag();
@@ -182,15 +188,22 @@ public class TreePainter : EditorWindow
         foreach (var obj in DragAndDrop.objectReferences)
         {
             activeCollection.collection.Add(obj.name);
+            activePrefabCollection.Add((GameObject)obj);
             activeCollection.object_collection.Add((GameObject)obj);
         }
 
         Config currentConfig = GetConfig(configFilePath);
         currentConfig.collections = configuration.collections;
 
-        Debug.Log("json is: " + currentConfig.ToJson());
+        Debug.Log("dump: " + JSON.Dump(currentConfig));
 
-        File.WriteAllText(configFilePath, currentConfig.ToJson());
+
+
+
+        //Debug.Log("json is: " + currentConfig.ToJson());
+
+        File.WriteAllText(configFilePath, JSON.Dump(currentConfig));
+        //File.WriteAllText(configFilePath, currentConfig.ToJson());
 
 
         PrefabList();
@@ -263,21 +276,21 @@ public class TreePainter : EditorWindow
     public void CreateGUI()
     {
 
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/PaintTrees/USS/PaintTrees.uss");
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/TreePainter/USS/TreePainter.uss");
         rootVisualElement.styleSheets.Add(styleSheet);
 
-        var HeaderUXML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/PaintTrees/UXML/Header.uxml");
+        var HeaderUXML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/TreePainter/UXML/Header.uxml");
         VisualElement elementsFromHeaderUXML = HeaderUXML.Instantiate();
         rootVisualElement.Add(elementsFromHeaderUXML);
 
 
 
-        var CollectionListUXML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/PaintTrees/UXML/CollectionList.uxml");
+        var CollectionListUXML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/TreePainter/UXML/CollectionList.uxml");
         VisualElement elementsFromCollectionListUXML = CollectionListUXML.Instantiate();
         rootVisualElement.Add(elementsFromCollectionListUXML);
 
 
-        var createCollectionML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/PaintTrees/UXML/CreateCollection.uxml");
+        var createCollectionML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/TreePainter/UXML/CreateCollection.uxml");
         VisualElement elementsFromCreateCollectionML = createCollectionML.Instantiate();
 
         CollectionList();
@@ -297,7 +310,7 @@ public class TreePainter : EditorWindow
         var collectionNameField = rootVisualElement.Q<TextField>("newCollectionName");
         createButton.RegisterCallback<MouseUpEvent>((evt) => validateAndCreateCollection(collectionNameField.text));
 
-        var footerUXML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/PaintTrees/UXML/Footer.uxml");
+        var footerUXML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/TreePainter/UXML/Footer.uxml");
         VisualElement elementsFromFooterUXML = footerUXML.Instantiate();
         rootVisualElement.Add(elementsFromFooterUXML);
     }
@@ -312,47 +325,41 @@ public class TreePainter : EditorWindow
         return false;
     }
 
-    private static bool validateTextInput(string name)
-    {
-        Validator validator = new Validator();
-
-        validator.IsMinLength(name, 1).WithMessage("Name has to be longer than 0 characters.")
-        .IsMaxLength(name, 128).WithMessage("Name is too long.")
-        .IsNotNull(name).WithMessage("Name is NULL");
-
-        if (!validator.IsValid)
-        {
-            validator.ThrowValidationException();
-        }
-        return true;
-
-    }
 
     private Config GetConfig(string name)
     {
-        validateTextInput(configFilePath);
         string fileJson = File.ReadAllText(configFilePath);
-        Config config = fileJson.FromJson<Config>();
+        //Debug.Log("Loaded config data: " + fileJson);
+        //Config config = fileJson.FromJson<Config>();
+        //Variant data = JSON.Load(fileJson);
+        //var shit = JSON.Dump(fileJson, EncodeOptions.None);
+        Config output = new Config();
+        output = JSON.Load(fileJson).Make<Config>();
 
-        return config;
+        //JSON.MakeInto(JSON.Load(shit), out output);
+
+        return output;
 
     }
 
     private void createConfig()
     {
         Config newConfig = new Config();
-        string jsonPaintCollection = newConfig.ToJson();
+        List<string> data = new List<string>();
+
+        string poop = JSON.Dump(newConfig, EncodeOptions.PrettyPrint);
+
+
 
         if (!File.Exists(configFilePath))
         {
 
-            File.WriteAllText(configFilePath, jsonPaintCollection);
+            File.WriteAllText(configFilePath, poop);
 
         }
     }
     private void createCollection(string name)
     {
-        validateTextInput(name);
         if (!config)
         {
             createConfig();
@@ -387,9 +394,25 @@ public class TreePainter : EditorWindow
 
         newCollection.name = name;
 
+
+
+        Debug.Log("new collection name should be: " + name + ", it really is " + newCollection.name);
+
+
+
+
         Config currentConfig = GetConfig(configFilePath);
         currentConfig.collections.Add(newCollection);
-        File.WriteAllText(configFilePath, currentConfig.ToJson());
+
+        currentConfig.collections.Add(newCollection);
+
+
+        var penis = JSON.Dump(currentConfig);
+        Debug.Log("PENIS JSON : " + penis);
+
+        //string jsonPaintCollection = data.ToString();
+
+        File.WriteAllText(configFilePath, penis);
 
 
 

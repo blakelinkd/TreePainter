@@ -1,6 +1,9 @@
-using System.Collections.Generic;
 using UnityEngine;
-public class PrefabCollection
+using System;
+using System.Collections.Generic;
+
+[Serializable]
+public class PrefabCollection : MonoBehaviour
 {
     public string name { get; set; }
     public List<string> collection;
